@@ -1,0 +1,12 @@
+Django==4.2
+python-dotenv
+djangorestframework
+psycopg2-binary
+ca-vntl-helper==1.1.6
+langchain-openai
+python-dotenv
+langchain-google-genai
+langchain-community
+pgcli
+django-rest-swagger
+drf-yasg
