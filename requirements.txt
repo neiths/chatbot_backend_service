@@ -10,3 +10,4 @@ langchain-community
 pgcli
 django-rest-swagger
 drf-yasg
+wikipedia

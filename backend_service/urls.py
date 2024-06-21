@@ -20,7 +20,6 @@ from rest_framework import generics
 from api.views import conversationSerializer_list_create, conversationSerializer_retrieve_update_destroy, \
 systemPromptSerializer_list_create, systemPromptSerializer_retrieve_update_destroy, answer_message
 
-
 from django.conf.urls.static import static
 from rest_framework_swagger.views import get_swagger_view
 from drf_yasg.views import get_schema_view

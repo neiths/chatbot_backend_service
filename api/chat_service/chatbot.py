@@ -7,7 +7,8 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import AIMessage, HumanMessage
 from ca_vntl_helper import error_tracking_decorator
-
+from chat_service.agent import load_agent_executor
+from chat_service.tool_basic import tools
 from api.models import Conversation, SystemPrompt
 
 # Function to convert a chat string to a message object to store in the chat history
@@ -62,6 +63,14 @@ def run_chatbot(input_text, chat_history, expert_name='friend', llm_provider='go
     output = chain.invoke({"input": input_text, "chat_history": chat_history})
 
     return output
+
+def run_agent(input_text, chat_history, expert_name='friend', llm_provider='google'):
+    llm = load_llm(llm_provider)
+    prompt = get_expert_prompt(expert_name)
+    agent_executor = load_agent_executor(llm, tools, prompt)
+    output = agent_executor.invoke({"input": input_text, "chat_history": chat_history})
+    return output['output']
+ 
 
 @error_tracking_decorator
 def get_message_from_chatbot(conversation_id, user_message):
