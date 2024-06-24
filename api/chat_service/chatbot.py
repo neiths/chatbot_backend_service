@@ -7,18 +7,24 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import AIMessage, HumanMessage
 from ca_vntl_helper import error_tracking_decorator
-from chat_service.agent import load_agent_executor
-from chat_service.tool_basic import tools
+from api.chat_service.agent import load_agent_executor
+from api.chat_service.tool_basic import tools
 from api.models import Conversation, SystemPrompt
 
 # Function to convert a chat string to a message object to store in the chat history
 def convert_chat_dict_to_prompt(dict_message):
+    print(dict_message)
+    print("1")
     if dict_message['message_type'] == 'human_message':
+        print("2")
         return HumanMessage(dict_message['content'])
     if dict_message['message_type'] == 'ai_message':
+        print("3")
         return AIMessage(dict_message['content'])
+        
     else:
-        raise ValueError("Invalid type")
+        print("4")
+        raise Exception("Invalid type")
 
 # Initialize the LLM model
 def load_llm(llm_provider):
@@ -33,6 +39,7 @@ def load_llm(llm_provider):
         pass
 
 def get_expert_prompt(expert_name):
+    """
     print('get expert prompt here')
     #load model instance sq by filter
     system_prompt_qs = SystemPrompt.objects.filter(expert_name=expert_name)
@@ -41,16 +48,18 @@ def get_expert_prompt(expert_name):
     
     system_prompt_instance = system_prompt_qs.first()
     system_prompt = system_prompt_instance.prompt
-
+    """
+    system_prompt = "You are a helpful assistant. I can help you with information from vector database.You can call tool function 'load_data_from_vector_db' to get information from vector database with input: 'load_data_from_vector_db('search  term')"
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
         MessagesPlaceholder(variable_name="chat_history"),
-        ("user", "{input}")
+        ("user", "{input}"),
+        MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
 
     return prompt
 
-def run_chatbot(input_text, chat_history, expert_name='friend', llm_provider='google'):
+def run_chatbot(input_text, chat_history, expert_name='reseacher', llm_provider='google'):
     # load llm
     llm = load_llm(llm_provider)
 
@@ -64,10 +73,13 @@ def run_chatbot(input_text, chat_history, expert_name='friend', llm_provider='go
 
     return output
 
-def run_agent(input_text, chat_history, expert_name='friend', llm_provider='google'):
+def run_agent(input_text, chat_history, expert_name='reseacher', llm_provider='google'):
     llm = load_llm(llm_provider)
     prompt = get_expert_prompt(expert_name)
+    print("6")
     agent_executor = load_agent_executor(llm, tools, prompt)
+    #output = agent_executor.invoke({"input": input_text, "chat_history": chat_history})
+    print("7")
     output = agent_executor.invoke({"input": input_text, "chat_history": chat_history})
     return output['output']
  
@@ -79,7 +91,7 @@ def get_message_from_chatbot(conversation_id, user_message):
     # expert
     # provider
     # ===========> conversation_model
-    print('dajkdakakjda')
+    #print('dajkdakakjda')
     conversation_instance_qs = Conversation.objects.filter(user_id=conversation_id)
     if not conversation_instance_qs.exists():
         raise Exception("Conversation not found")
@@ -88,10 +100,11 @@ def get_message_from_chatbot(conversation_id, user_message):
     expert = conversation_instance.expert_name
     provider = conversation_instance.gpt_model
     chat_history_dicts = conversation_instance.chat_history
-
+    print("5")
     chat_history = [convert_chat_dict_to_prompt(chat_history_dict) for chat_history_dict in chat_history_dicts]
-
-    response = run_chatbot(user_message, chat_history, expert, provider)
+    print(chat_history)
+    #response = run_chatbot(user_message, chat_history, expert, provider)
+    response = run_agent(user_message, chat_history, expert, provider)
 
     conversation_instance.chat_history.append({"message_type": "human_message", "content": user_message})
     conversation_instance.chat_history.append({"message_type": "ai_message", "content": response})

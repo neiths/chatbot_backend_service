@@ -1,0 +1,11 @@
+{'input': 'search for me manga Naruto', 'chat_history': [], 'agent_outcome': AgentActionMessageLog(tool='get_info_from_wikipedia', tool_input={'query': 'Naruto (manga)'
+    }, log="\nInvoking: `get_info_from_wikipedia` with `{'query': 'Naruto (manga)'}`\n\n\n", message_log=[AIMessage(content='', additional_kwargs={'function_call': {'arguments': '{
+                    "query": "Naruto (manga)"
+                }', 'name': 'get_info_from_wikipedia'
+            }
+        }, response_metadata={'token_usage': {'completion_tokens': 23, 'prompt_tokens': 130, 'total_tokens': 153
+            }, 'model_name': 'gpt-3.5-turbo', 'system_fingerprint': None, 'finish_reason': 'function_call', 'logprobs': None
+        }, id='run-cb860ac4-5470-4ad9-9fd3-ea0e972e0473-0', usage_metadata={'input_tokens': 130, 'output_tokens': 23, 'total_tokens': 153
+        })
+    ]), 'intermediate_steps': []
+}

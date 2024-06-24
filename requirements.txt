@@ -11,3 +11,9 @@ pgcli
 django-rest-swagger
 drf-yasg
 wikipedia
+pypdf
+langchain-text-splitters
+pgvector
+sqlalchemy
+langchain-postgres
+langgraph
