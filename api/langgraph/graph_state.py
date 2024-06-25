@@ -19,8 +19,8 @@ class AgentState(TypedDict):
     # this state should be ADDED to the existing values (not overwrite it)
     
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
-    decision_retry_count: int
-    
+    next_role : Union[str, None]
+    last_node_name : str
     
     
     
